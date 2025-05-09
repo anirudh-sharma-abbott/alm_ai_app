@@ -4,6 +4,7 @@ openpyxl
 scikit-learn
 matplotlib
 seaborn
-plotly
+plotly==5.19.0
 python-dotenv
 openai>=1.0.0
+datetime

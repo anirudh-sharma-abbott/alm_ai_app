@@ -1,36 +1,76 @@
-# ALM Requirement Classification & Rewording App
+# FRS Requirement Classification Dashboard
 
-This Streamlit-based tool helps teams analyze and improve Functional Requirement Specifications (FRS) from ALM by:
-
-- Grouping requirements into clusters based on functional Folder Names
-- Identifying misclassified requirements (e.g., incorrectly labeled as “2 - QNC” instead of “5 - Non-Regulated”)
-- Enhancing requirement descriptions using GPT-powered rewording
-- Visualizing folder-wise misclassification summaries
-- Exporting CSV files of filtered results per folder
+This Streamlit-based application analyzes and reclassifies Functional Requirements Specifications (FRS) within a regulated Veeva Medical CRM environment. It flags misclassified entries based on domain-specific logic and offers a GPT-powered assistant to reword requirement descriptions for clarity and compliance.
 
 ---
 
 ## Features
 
-- Upload ALM FRS Mapping file (`frs_to_folder_mapping.xlsx`)
-- Automatic reclassification based on keywords in descriptions:
-  - Descriptions containing “sample,” “lot number,” “product,” etc., remain QNC
-  - All others are suggested as Non-Regulated
-- Clustered view based on `Folder Name`
-- GPT-based rewording of requirement descriptions
-- Export misclassified entries per folder
-- Summary bar chart showing misclassification count by folder
+### 1. Requirement Reclassification
+- Reclassifies requirements based on predefined keyword logic.
+- Flags mismatches between manual classification and keyword-based inference.
+- Allows download of filtered misclassifications by folder.
+
+### 2. Summary & Insights
+- Displays misclassification trends over time (monthly view).
+- Shows cycle-level and folder-level misclassification counts.
+- Pie charts showing % distribution across Target Cycles and Folders.
+- Highlights future-dated requirements for audit/investigation.
+
+### 3. GPT-Powered Rewriter
+- Uses OpenAI GPT-3.5 Turbo to reword requirement descriptions.
+- Applies a regulatory-aware system prompt aligned with Medical CRM documentation standards.
+- Ensures language is clear and professional without altering business intent.
 
 ---
 
-## How to Run
+## How to Use
 
-```bash
-# 1. Install dependencies
+1. Clone the Repository
+
+git clone https://github.com/<your-org>/frs-dashboard.git
+cd frs-dashboard
+
+2. Set Up Environment
+Create a .env file in the root directory:
+OPENAI_API_KEY=your_openai_key_here
+
+3. Install Dependencies
 pip install -r requirements.txt
 
-# 2. Add your OpenAI key in a .env file
-echo "OPENAI_API_KEY=sk-xxxxx" > .env
+4. Launch the Streamlit App
+streamlit run main.py
 
-# 3. Run the Streamlit app
-streamlit run app.py
+5. Upload Your Input File
+Upload an Excel file (.xlsx) with the following columns:
+
+Required Columns
+FRS Req ID
+FRS Name
+Folder Name
+Description
+Requirement Classification
+Creation Date
+Target Cycle (optional)
+
+Reclassification Logic
+Requirements are reclassified as:
+
+2 - Quality Non-Critical (QNC) if they include keywords like "sample", "lot number", "product", etc.
+
+Otherwise, they are inferred as 5 - Non-Regulated.
+
+If the manual classification does not match the inferred class, the requirement is marked as misclassified.
+
+GPT Rewriting Prompt (System Message)
+You are an expert in regulatory-compliant Veeva Medical CRM documentation. Reword the given requirement for clarity and precision without changing the business logic or intent.
+The model rewrites the requirement while maintaining its original business meaning, tailored to medical documentation standards.
+
+Visualization Examples
+Bar charts: Misclassified requirements per folder or target cycle
+
+Line charts: Monthly misclassification trends
+
+Pie charts: Distribution of all requirements by cycle and folder
+
+Table: Requirements with future-dated creation timestamps
